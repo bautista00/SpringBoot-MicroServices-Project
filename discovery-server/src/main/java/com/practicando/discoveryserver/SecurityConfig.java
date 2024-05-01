@@ -1,4 +1,4 @@
-package Config;
+package com.practicando.discoveryserver;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
