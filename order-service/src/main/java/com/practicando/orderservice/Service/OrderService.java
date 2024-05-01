@@ -8,6 +8,7 @@ import com.practicando.orderservice.Model.Order;
 import com.practicando.orderservice.Model.OrderLineItems;
 import com.practicando.orderservice.Repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class OrderService {
 
 
@@ -61,11 +63,11 @@ public class OrderService {
     }
 
     private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto) {
-       OrderLineItems orderLineItems =  new OrderLineItems();
-       orderLineItems.setPrice(orderLineItemsDto.getPrice());
-       orderLineItems.setQuantity(orderLineItemsDto.getQuantity());
-       orderLineItems.setSkuCode(orderLineItemsDto.getSkuCode());
-       return orderLineItems;
+        OrderLineItems orderLineItems =  new OrderLineItems();
+        orderLineItems.setPrice(orderLineItemsDto.getPrice());
+        orderLineItems.setQuantity(orderLineItemsDto.getQuantity());
+        orderLineItems.setSkuCode(orderLineItemsDto.getSkuCode());
+        return orderLineItems;
 
     }
 
