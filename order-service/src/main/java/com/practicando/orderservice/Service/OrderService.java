@@ -4,6 +4,7 @@ package com.practicando.orderservice.Service;
 import com.practicando.orderservice.Dto.InventoryResponse;
 import com.practicando.orderservice.Dto.OrderLineItemsDto;
 import com.practicando.orderservice.Dto.OrderRequest;
+import com.practicando.orderservice.Event.OrderPlacedEvent;
 import com.practicando.orderservice.Model.Order;
 import com.practicando.orderservice.Model.OrderLineItems;
 import com.practicando.orderservice.Repository.OrderRepository;
@@ -11,6 +12,7 @@ import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -29,6 +31,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
     private final Tracer tracer;
+    private final KafkaTemplate<String,OrderPlacedEvent> kafkaTemplate;
 
     public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
@@ -65,6 +68,7 @@ public class OrderService {
 
             if (allProductsInStock) {
                 orderRepository.save(order);
+                kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getOrderNumber()));
                 return "Order placed successfully";
             } else {
                 throw new IllegalArgumentException("Product is out of stock, please try again later.");
